@@ -22,7 +22,12 @@
   .page{max-width:880px;margin:0 auto;padding:12px;}
   .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap;}
   h1{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:0;}
-  .topctrls{display:flex;gap:6px;align-items:center;}
+  .bottomctrls{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:12px;}
+  .ioctrls{display:flex;gap:14px;align-items:center;}
+  .iconbtn{width:34px;height:30px;padding:4px;text-align:center;font-size:16px;line-height:20px;}
+  .drawgrp svg{margin-top:2px;}
+  .legendgrp .legend{margin-top:2px;}
+  .legend .depthcalc .v{font-weight:800;}
   .langbtns{display:flex;border:1px solid var(--line);border-radius:5px;overflow:hidden;}
   .langbtns button{background:var(--panel);border:none;color:var(--dim);padding:5px 9px;font:inherit;font-size:11px;cursor:pointer;}
   .langbtns button.active{background:var(--accent);color:#08110f;}
@@ -52,15 +57,12 @@
   .chkrow input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);}
   .chkrow label{font-size:11px;color:var(--dim);margin:0;}
 
-  .stage{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:10px;}
-  @media (max-width:640px){.stage{grid-template-columns:1fr;}}
   svg{width:100%;height:auto;background:var(--input);border:1px solid var(--line);border-radius:6px;display:block;}
   .legend{background:var(--input);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:12.5px;line-height:2.0;}
   .legend .row{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--line);padding:2px 0;}
   .legend .row:last-child{border-bottom:none;}
   .legend .k{color:var(--dim);}
   .legend .v{color:var(--bevel);font-weight:600;}
-  .legend .note{color:var(--dim);font-size:11px;margin-top:6px;font-style:italic;}
   .legend .warn{color:#c0553a;font-size:11px;margin-top:4px;}
   .bevelLine{stroke:var(--bevel);}
   .bevelText{fill:var(--bevel);}
@@ -71,17 +73,6 @@
 <div class="page">
   <div class="topbar">
     <h1 id="t_title">GrindCalc — геометрия фасок</h1>
-    <div class="topctrls">
-      <button class="iobtn" id="btnSave">Сохранить расчёт</button>
-      <label class="iobtn" id="btnOpen" for="fileInput">Открыть расчёт</label>
-      <input type="file" id="fileInput" class="vh" accept=".txt,text/plain">
-      <div class="langbtns">
-        <button data-lang="uk">UA</button>
-        <button data-lang="ru" class="active">RU</button>
-        <button data-lang="de">DE</button>
-        <button data-lang="en">EN</button>
-      </div>
-    </div>
   </div>
 
   <div class="groups">
@@ -102,21 +93,6 @@
       </div>
     </div>
 
-  </div>
-
-  <div class="grp" id="chkGaugeGrp">
-    <div class="chkrow">
-      <input type="checkbox" id="chkGauge">
-      <label id="t_lblGauge" for="chkGauge">Измеритель со смещением от торца</label>
-    </div>
-    <div class="gridN c3" id="fldBG" style="display:none;margin-top:6px;">
-      <div class="fld"><label id="t_lblBG">BG, мм</label><input type="number" id="BG" value="1" step="0.05"></div>
-    </div>
-  </div>
-
-  <div class="stage">
-    <svg id="svg" viewBox="0 0 400 260"></svg>
-    <div class="legend" id="legend"></div>
   </div>
 
   <div class="groups" id="knifeGroups">
@@ -151,14 +127,6 @@
       </div>
     </div>
 
-    <div class="grp">
-      <div class="cap" id="t_capWheel">Объём и масса материала</div>
-      <div class="out-row"><span class="k" id="t_lblVol">Объём снимаемого материала</span><span class="v" id="volOut">—</span></div>
-      <div class="gridN c3">
-        <div class="fld"><label id="t_lblDens">Плотность материала, г/см³</label><input type="number" id="density" value="7.85" step="0.05"></div>
-        <div class="fld"><label id="t_lblHRC">Твёрдость ножа, HRC</label><input type="number" id="knifeHRC" value="58" step="0.5"></div>
-      </div>
-    </div>
   </div>
 
   <div class="groups" id="halfknifeGroups" style="display:none">
@@ -183,12 +151,50 @@
       </div>
     </div>
 
-    <div class="grp">
-      <div class="cap" id="t_capWheelHalf">Объём и масса материала</div>
-      <div class="out-row"><span class="k" id="t_lblVolHalf">Объём снимаемого материала</span><span class="v" id="volOutHalf">—</span></div>
-      <div class="gridN c3">
-        <div class="fld"><label id="t_lblDensHalf">Плотность материала, г/см³</label><input type="number" id="densityHalf" value="7.85" step="0.05"></div>
-      </div>
+  </div>
+
+
+  <div class="grp" id="chkGaugeGrp">
+    <div class="chkrow">
+      <input type="checkbox" id="chkGauge">
+      <label id="t_lblGauge" for="chkGauge">Измеритель со смещением от торца</label>
+    </div>
+    <div class="gridN c3" id="fldBG" style="display:none;margin-top:6px;">
+      <div class="fld"><label id="t_lblBG">BG, мм</label><input type="number" id="BG" value="1" step="0.05"></div>
+    </div>
+  </div>
+
+  <div class="grp drawgrp">
+    <div class="cap" id="t_capDrawing">Чертёж</div>
+    <svg id="svg" viewBox="0 0 400 260"></svg>
+  </div>
+
+  <div class="grp legendgrp">
+    <div class="cap" id="t_capLegend">Легенда</div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="grp">
+    <div class="cap" id="t_capWheel">Объём</div>
+    <div class="out-row" id="volRowKnife"><span class="k" id="t_lblVol">Объём снимаемого материала</span><span class="v" id="volOut">—</span></div>
+    <div class="out-row" id="volRowHalf" style="display:none"><span class="k" id="t_lblVolHalf">Объём снимаемого материала</span><span class="v" id="volOutHalf">—</span></div>
+    <input type="hidden" id="density" value="7.85">
+    <input type="hidden" id="knifeHRC" value="58">
+    <input type="hidden" id="densityHalf" value="7.85">
+  </div>
+
+
+  <div class="bottomctrls">
+    <div class="ioctrls">
+    <button class="iobtn iconbtn" id="btnSave" title="Сохранить расчёт" aria-label="Сохранить расчёт">💾</button>
+    <label class="iobtn iconbtn" id="btnOpen" for="fileInput" title="Открыть расчёт" aria-label="Открыть расчёт">📂</label>
+    <input type="file" id="fileInput" class="vh" accept=".txt,text/plain">
+    </div>
+    <div class="langbtns">
+      <button data-lang="uk">UA</button>
+      <button data-lang="ru" class="active">RU</button>
+      <button data-lang="de">DE</button>
+      <button data-lang="en">EN</button>
     </div>
   </div>
 </div>
@@ -202,7 +208,7 @@ const d2r = d => d*Math.PI/180;
 // ---------- i18n ----------
 const DICT = {
   ru:{
-    t_title:'GrindCalc — геометрия фасок',
+    t_title:'GrindCalc — геометрия фасок', t_capDrawing:'Чертёж', t_capLegend:'Легенда',
     btnSave:'Сохранить расчёт', btnOpen:'Открыть расчёт',
     t_capGroup:'Тип детали', groupKnife:'Нож', groupHalfknife:'Полунож',
     t_capMode:'Выбор фаски', modeSingle:'Односторон.', modeSym:'Симметр.', modeAsym:'Несимметр.',
@@ -218,7 +224,7 @@ const DICT = {
     t_capDimsHalf:'Диаметр', t_lblDh:'Ø, мм',
     t_capBevelsHalf:'Данные фасок', t_lblAngHA:'Угол LM–AD, °', t_lblLenHA:'Длина LM, мм',
     t_lblAngHB:'Угол NP–AD, °', t_lblLenHB:'Длина NP, мм',
-    t_capWheelHalf:'Объём и масса материала', t_lblVolHalf:'Объём снимаемого материала', t_lblDensHalf:'Плотность материала, г/см³',
+    t_capWheelHalf:'Объём', t_lblVolHalf:'Объём снимаемого материала', t_lblDensHalf:'Плотность материала, г/см³',
     note:'Чертёж выполнен пропорционально (2 мм толщины ≈ 1 см на экране)',
     torec:'Убыль диаметра', diamStart:'Диаметр начала фаски',
     faska:'Фаска',
@@ -230,13 +236,13 @@ const DICT = {
     warnPrimA:'1A не нужна: 2A сама достигает толщины', warnPrimB:'1B не нужна: 2B сама достигает толщины',
     warnDiam:'Готовый диаметр должен быть меньше диаметра заготовки',
     warnAO:'AO должно быть больше 0 и меньше толщины T',
-    t_capWheel:'Объём и абразивный круг', t_lblVol:'Объём снимаемого материала',
+    t_capWheel:'Объём', t_lblVol:'Объём снимаемого материала',
     t_lblGratio:'G-ratio (по HRC)', t_lblWear:'Убыль круга / коррекция подачи ΔR',
     t_lblWD:'Ø круга, мм', t_lblWW:'Ширина круга, мм', t_lblWH:'Твёрдость связки', t_lblHRC:'Твёрдость ножа, HRC',
     t_wheelNote:'G-ratio берётся по HRC ножа (таблица из основного приложения). Буква твёрдости связки пока информационная — не участвует в расчёте, нужны твои значения G по буквам, если хочешь их учитывать.'
   },
   de:{
-    t_title:'GrindCalc — Fasengeometrie',
+    t_title:'GrindCalc — Fasengeometrie', t_capDrawing:'Zeichnung', t_capLegend:'Legende',
     btnSave:'Berechnung speichern', btnOpen:'Berechnung öffnen',
     t_capGroup:'Werkstücktyp', groupKnife:'Messer', groupHalfknife:'Halbmesser',
     t_capMode:'Fasenwahl', modeSingle:'Einseitig', modeSym:'Symmetrisch', modeAsym:'Asymmetrisch',
@@ -270,7 +276,7 @@ const DICT = {
     t_wheelNote:'G-Ratio wird über die Messer-HRC ermittelt (Tabelle aus der Hauptanwendung). Der Bindungshärte-Buchstabe ist derzeit nur informativ — fließt nicht in die Berechnung ein.'
   },
   uk:{
-    t_title:'GrindCalc — геометрія фасок',
+    t_title:'GrindCalc — геометрія фасок', t_capDrawing:'Креслення', t_capLegend:'Легенда',
     btnSave:'Зберегти розрахунок', btnOpen:'Відкрити розрахунок',
     t_capGroup:'Тип деталі', groupKnife:'Ніж', groupHalfknife:'Півніж',
     t_capMode:'Вибір фаски', modeSingle:'Одностор.', modeSym:'Симетр.', modeAsym:'Несиметр.',
@@ -304,7 +310,7 @@ const DICT = {
     t_wheelNote:'G-ratio береться за HRC ножа (таблиця з основного додатку). Літера твердості зв\'язки поки інформаційна — не бере участі в розрахунку, потрібні твої значення G за літерами.'
   },
   en:{
-    t_title:'GrindCalc — bevel geometry',
+    t_title:'GrindCalc — bevel geometry', t_capDrawing:'Drawing', t_capLegend:'Legend',
     btnSave:'Save calculation', btnOpen:'Open calculation',
     t_capGroup:'Part type', groupKnife:'Knife', groupHalfknife:'Half-knife',
     t_capMode:'Bevel type', modeSingle:'Single', modeSym:'Symmetric', modeAsym:'Asymmetric',
@@ -344,7 +350,7 @@ lang = lang.startsWith('de') ? 'de' : lang.startsWith('uk') ? 'uk' : lang.starts
 function applyI18n(){
   const d = DICT[lang];
   document.querySelectorAll('[id^="t_"]').forEach(elx=>{ if(d[elx.id]) elx.textContent = d[elx.id]; });
-  $('btnSave').textContent = d.btnSave; $('btnOpen').textContent = d.btnOpen;
+  $('btnSave').textContent = '💾'; $('btnOpen').textContent = '📂';
   document.querySelector('[data-group="knife"]').textContent = d.groupKnife;
   document.querySelector('[data-group="halfknife"]').textContent = d.groupHalfknife;
   document.querySelector('[data-mode="single"]').textContent = d.modeSingle;
@@ -369,6 +375,8 @@ document.querySelectorAll('#groupBtns button').forEach(b=>{
     group=b.dataset.group;
     $('knifeGroups').style.display = group==='knife' ? 'flex' : 'none';
     $('halfknifeGroups').style.display = group==='halfknife' ? 'flex' : 'none';
+    $('volRowKnife').style.display = group==='knife' ? 'flex' : 'none';
+    $('volRowHalf').style.display = group==='halfknife' ? 'flex' : 'none';
     render();
   });
 });
@@ -453,6 +461,8 @@ function applySaveText(text){
       document.querySelectorAll('#groupBtns button').forEach(x=>x.classList.toggle('active', x.dataset.group===group));
       $('knifeGroups').style.display = group==='knife' ? 'flex' : 'none';
       $('halfknifeGroups').style.display = group==='halfknife' ? 'flex' : 'none';
+      $('volRowKnife').style.display = group==='knife' ? 'flex' : 'none';
+      $('volRowHalf').style.display = group==='halfknife' ? 'flex' : 'none';
     } else if(k==='mode'){
       mode=v.trim();
       document.querySelectorAll('#modeBtns button').forEach(x=>x.classList.toggle('active', x.dataset.mode===mode));
@@ -628,9 +638,7 @@ function renderKnife(){
   let volume = removedVolumeKnife(Bpt, top, O1, Dblank);
   if(bottom) volume += removedVolumeKnife(Apt, bottom, O1, Dblank);
   const volCm3 = Math.abs(volume)/1000;
-  const density = parseFloat($('density').value);
-  const massG = volCm3 * (isNaN(density)? 0 : density);
-  $('volOut').textContent = volCm3.toFixed(3)+' см³' + (density>0? ' ('+massG.toFixed(1)+' г)' : '');
+  $('volOut').textContent = volCm3.toFixed(3)+' см³';
 
   // ---- gauge offset (G on BC/AD, distance BG from the corner): scales only the
   // primary (1st) bevel depth by the ratio GM/BM ----
@@ -686,16 +694,16 @@ function renderKnife(){
   const depth2Adisp = depth2A==null ? null : depth2A*ratioBottom;
   let depthHtml;
   if(!bottom || mode==='sym'){
-    depthHtml = `<div class="row"><span class="k">${d.depthA}</span><span class="v">${depth1Adisp.toFixed(3)} мм</span></div>`
-      + `<div class="row"><span class="k">${d.depthB}</span><span class="v">${depth1B==null? '—' : depth1B.toFixed(3)+' мм'}</span></div>`;
+    depthHtml = `<div class="row depthcalc"><span class="k">${d.depthA}</span><span class="v">${depth1Adisp.toFixed(3)} мм</span></div>`
+      + `<div class="row depthcalc"><span class="k">${d.depthB}</span><span class="v">${depth1B==null? '—' : depth1B.toFixed(3)+' мм'}</span></div>`;
   } else {
-    depthHtml = `<div class="row"><span class="k">${d.depth1A}</span><span class="v">${depth1Adisp.toFixed(3)} мм</span></div>`
-      + `<div class="row"><span class="k">${d.depth2A}</span><span class="v">${depth2Adisp.toFixed(3)} мм</span></div>`
-      + `<div class="row"><span class="k">${d.depth1B}</span><span class="v">${depth1B==null? '—' : depth1B.toFixed(3)+' мм'}</span></div>`
-      + `<div class="row"><span class="k">${d.depth2B}</span><span class="v">${depth2B==null? '—' : depth2B.toFixed(3)+' мм'}</span></div>`;
+    depthHtml = `<div class="row depthcalc"><span class="k">${d.depth1A}</span><span class="v">${depth1Adisp.toFixed(3)} мм</span></div>`
+      + `<div class="row depthcalc"><span class="k">${d.depth2A}</span><span class="v">${depth2Adisp.toFixed(3)} мм</span></div>`
+      + `<div class="row depthcalc"><span class="k">${d.depth1B}</span><span class="v">${depth1B==null? '—' : depth1B.toFixed(3)+' мм'}</span></div>`
+      + `<div class="row depthcalc"><span class="k">${d.depth2B}</span><span class="v">${depth2B==null? '—' : depth2B.toFixed(3)+' мм'}</span></div>`;
   }
 
-  $('legend').innerHTML = rowsHtml + chipsHtml + depthHtml + warnHtml + `<div class="note">${d.note}</div>`;
+  $('legend').innerHTML = rowsHtml + chipsHtml + depthHtml + warnHtml;
 
   const xMaxMm = Math.max(top.M.x, bottom? bottom.M.x : 0, 0.001);
   const {sx, sy, dot, line, marginMm} = svgReset(t, t, xMaxMm);
@@ -769,9 +777,7 @@ function renderHalf(){
   let volume = removedVolumeHalf({x:0,y:t}, top, D);
   if(bottom) volume += removedVolumeHalf({x:0,y:-t}, bottom, D);
   const volCm3 = Math.abs(volume)/1000;
-  const density = parseFloat($('densityHalf').value);
-  const massG = volCm3 * (isNaN(density)? 0 : density);
-  $('volOutHalf').textContent = volCm3.toFixed(3)+' см³' + (density>0? ' ('+massG.toFixed(1)+' г)' : '');
+  $('volOutHalf').textContent = volCm3.toFixed(3)+' см³';
 
   const COL = { green:{bg:'#2e8b47', fg:'#f2f6ff'}, orange:{bg:'#e07b1f', fg:'#f2f6ff'}, red:{bg:'#d63b2f', fg:'#f2f6ff'} };
   function chip(label, value, col){
@@ -799,10 +805,10 @@ function renderHalf(){
 
   const topHeightDisp = top.height*ratioTop;
   const bottomHeightDisp = bottom==null ? null : bottom.height*ratioBottom;
-  let depthHtml = `<div class="row"><span class="k">${d.depthTop}</span><span class="v">${topHeightDisp.toFixed(3)} мм</span></div>`;
-  if(bottom) depthHtml += `<div class="row"><span class="k">${d.depthBottom}</span><span class="v">${bottomHeightDisp.toFixed(3)} мм</span></div>`;
+  let depthHtml = `<div class="row depthcalc"><span class="k">${d.depthTop}</span><span class="v">${topHeightDisp.toFixed(3)} мм</span></div>`;
+  if(bottom) depthHtml += `<div class="row depthcalc"><span class="k">${d.depthBottom}</span><span class="v">${bottomHeightDisp.toFixed(3)} мм</span></div>`;
 
-  $('legend').innerHTML = chipsHtml + depthHtml + warnHtml + `<div class="note">${d.note}</div>`;
+  $('legend').innerHTML = chipsHtml + depthHtml + warnHtml;
 
   const xMaxMm = Math.max(top.M.x, bottom? bottom.M.x : 0, 0.001);
   const {sx, sy, dot, line, marginMm} = svgReset(t, t, xMaxMm);
