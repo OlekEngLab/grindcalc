@@ -404,13 +404,17 @@ document.querySelectorAll('input[type=number]').forEach(i=>i.addEventListener('i
 
 // ---------- save / open ----------
 $('btnSave').addEventListener('click', async()=>{
+  const defaultFilename = 'grindcalc-'+new Date().toISOString().slice(0,10)+'.txt';
+  const filenameInput = prompt('Введите название файла:', defaultFilename);
+  if (filenameInput === null) return;
+  let filename = filenameInput.trim().replace(/[\\/:*?"<>|]/g, '_');
+  if (!filename) { alert('Название файла не может быть пустым.'); return; }
+  if (!/\.txt$/i.test(filename)) filename += '.txt';
   const fields=['T','Dblank','Dfinal','alphaA','betaA','Len2A','gammaB','psiB','Len2B','AO','density','knifeHRC',
                 'Dh','Th','alphaHA','Len1HA','alphaHB','Len1HB','densityHalf','BG'];
   let out = 'GrindCalc save\ngroup='+group+'\nmode='+mode+'\ncentered='+($('chkCentered').checked?'1':'0')
     +'\ngauge='+($('chkGauge').checked?'1':'0')+'\n';
   fields.forEach(f=>out+=f+'='+$(f).value+'\n');
-  const filename = 'grindcalc-'+new Date().toISOString().slice(0,10)+'.txt';
-
   // В современных Chrome/Edge вызываем настоящее окно "Сохранить как".
   // Для file:// и браузеров без File System Access API используем обычную загрузку.
   if(window.showSaveFilePicker){
