@@ -3,40 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GrindCalc — геометрия фасок</title>
+<title>GrindCalc v1.01 — геометрия фасок</title>
 <style>
   :root{
     --bg:#12181d; --panel:#1a2129; --line:#2a3440; --ink:#dbe4ec; --dim:#7b8896;
     --accent:#4fb8a8; --steel:#8fa3b0; --input:#0e1317;
-    --bevel:#f2d94e; /* dark theme: yellow */
+    --bevel:#f2d94e;
   }
   @media (prefers-color-scheme: light){
     :root{
       --bg:#f2f4f6; --panel:#ffffff; --line:#d7dee3; --ink:#1c2530; --dim:#697683;
       --accent:#12897a; --steel:#4d5b66; --input:#eef1f3;
-      --bevel:#101418; /* light theme: black */
+      --bevel:#101418;
     }
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Consolas','SF Mono',Menlo,monospace;font-size:13px;}
   .page{max-width:880px;margin:0 auto;padding:12px;}
   .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap;}
+  .title-block{display:flex;align-items:center;gap:8px;}
   h1{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:0;}
+  .version{font-size:11px;color:var(--accent);background:var(--panel);border:1px solid var(--line);padding:2px 6px;border-radius:4px;}
   .topctrls{display:flex;gap:6px;align-items:center;}
   .langbtns{display:flex;border:1px solid var(--line);border-radius:5px;overflow:hidden;}
   .langbtns button{background:var(--panel);border:none;color:var(--dim);padding:5px 9px;font:inherit;font-size:11px;cursor:pointer;}
   .langbtns button.active{background:var(--accent);color:#08110f;}
-  .iobtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:5px 9px;border-radius:5px;font:inherit;font-size:11px;cursor:pointer;display:inline-block;}
+  .iobtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:5px 8px;border-radius:5px;font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
   .iobtn:hover{border-color:var(--accent);}
+  .iobtn svg{width:16px;height:16px;stroke:currentColor;}
   .legend .neg{color:#e05a3e !important;}
   input[type=file].vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-  .legend .chip{padding:2px 6px;border-radius:4px;font-weight:600;}
   .out-row{background:var(--input);border:1px solid var(--line);border-radius:6px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
   .out-row .k{color:var(--dim);font-size:11px;}
   .out-row .v{color:var(--accent);font-weight:700;font-size:13px;}
 
   .groups{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
-  .grp{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;}
+  .grp{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin-bottom:8px;}
   .grp .cap{color:var(--accent);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;}
   .modebtns{display:flex;gap:6px;}
   .modebtns button{flex:1;background:var(--input);border:1px solid var(--line);color:var(--dim);padding:7px 4px;border-radius:4px;font:inherit;font-size:11px;cursor:pointer;}
@@ -52,28 +54,31 @@
   .chkrow input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);}
   .chkrow label{font-size:11px;color:var(--dim);margin:0;}
 
-  .stage{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:10px;}
-  @media (max-width:640px){.stage{grid-template-columns:1fr;}}
+  .stage-wrap{margin-bottom:8px;}
   svg{width:100%;height:auto;background:var(--input);border:1px solid var(--line);border-radius:6px;display:block;}
-  .legend{background:var(--input);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:12.5px;line-height:2.0;}
+  .legend{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:12.5px;line-height:2.0;margin-bottom:8px;}
   .legend .row{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--line);padding:2px 0;}
   .legend .row:last-child{border-bottom:none;}
   .legend .k{color:var(--dim);}
   .legend .v{color:var(--bevel);font-weight:600;}
   .legend .note{color:var(--dim);font-size:11px;margin-top:6px;font-style:italic;}
   .legend .warn{color:#c0553a;font-size:11px;margin-top:4px;}
-  .bevelLine{stroke:var(--bevel);}
-  .bevelText{fill:var(--bevel);}
-  .bevelDot{fill:var(--bevel);}
 </style>
 </head>
 <body>
 <div class="page">
   <div class="topbar">
-    <h1 id="t_title">GrindCalc — геометрия фасок</h1>
+    <div class="title-block">
+      <h1 id="t_title">GrindCalc</h1>
+      <span class="version">v1.01</span>
+    </div>
     <div class="topctrls">
-      <button class="iobtn" id="btnSave">Сохранить расчёт</button>
-      <label class="iobtn" id="btnOpen" for="fileInput">Открыть расчёт</label>
+      <button class="iobtn" id="btnSave" title="Сохранить расчёт">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+      </button>
+      <label class="iobtn" id="btnOpen" for="fileInput" title="Открыть расчёт">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      </label>
       <input type="file" id="fileInput" class="vh" accept=".txt,text/plain">
       <div class="langbtns">
         <button data-lang="uk">UA</button>
@@ -84,44 +89,39 @@
     </div>
   </div>
 
-  <div class="groups">
-    <div class="grp">
-      <div class="cap" id="t_capGroup">Тип детали</div>
-      <div class="modebtns" id="groupBtns">
-        <button data-group="knife" class="active">Нож</button>
-        <button data-group="halfknife">Полунож</button>
+  <!-- 1. Тип детали -->
+  <div class="grp">
+    <div class="cap" id="t_capGroup">Тип детали</div>
+    <div class="modebtns" id="groupBtns">
+      <button data-group="knife" class="active">Нож</button>
+      <button data-group="halfknife">Полунож</button>
+    </div>
+  </div>
+
+  <!-- 2. Выбор фаски -->
+  <div class="grp">
+    <div class="cap" id="t_capMode">Выбор фаски</div>
+    <div class="modebtns" id="modeBtns">
+      <button data-mode="single">Односторон.</button>
+      <button data-mode="sym" class="active">Симметр.</button>
+      <button data-mode="asym">Несимметр.</button>
+    </div>
+    <div id="chkGaugeGrp" style="margin-top:8px;">
+      <div class="chkrow">
+        <input type="checkbox" id="chkGauge">
+        <label id="t_lblGauge" for="chkGauge">Измеритель со смещением от торца</label>
+      </div>
+      <div class="gridN c3" id="fldBG" style="display:none;margin-top:6px;">
+        <div class="fld"><label id="t_lblBG">BG, мм</label><input type="number" id="BG" value="1" step="0.05"></div>
       </div>
     </div>
-
-    <div class="grp">
-      <div class="cap" id="t_capMode">Выбор фаски</div>
-      <div class="modebtns" id="modeBtns">
-        <button data-mode="single">Односторон.</button>
-        <button data-mode="sym" class="active">Симметр.</button>
-        <button data-mode="asym">Несимметр.</button>
-      </div>
-    </div>
-
   </div>
 
-  <div class="grp" id="chkGaugeGrp">
-    <div class="chkrow">
-      <input type="checkbox" id="chkGauge">
-      <label id="t_lblGauge" for="chkGauge">Измеритель со смещением от торца</label>
-    </div>
-    <div class="gridN c3" id="fldBG" style="display:none;margin-top:6px;">
-      <div class="fld"><label id="t_lblBG">BG, мм</label><input type="number" id="BG" value="1" step="0.05"></div>
-    </div>
-  </div>
-
-  <div class="stage">
-    <svg id="svg" viewBox="0 0 400 260"></svg>
-    <div class="legend" id="legend"></div>
-  </div>
-
-  <div class="groups" id="knifeGroups">
-    <div class="grp">
-      <div class="cap" id="t_capDims">Заготовка и готовый диаметр</div>
+  <!-- 3. Заготовка и готовый диаметр (для ножа) / Диаметр (для полуножа) -->
+  <div class="grp" id="blockDims">
+    <div class="cap" id="t_capDims">Заготовка и готовый диаметр</div>
+    <!-- Нож -->
+    <div id="dimsKnife">
       <div class="gridN c3">
         <div class="fld"><label id="t_lblDblank">Ø заготовки, мм</label><input type="number" id="Dblank" value="201" step="0.05"></div>
         <div class="fld"><label id="t_lblDfinal">Ø готовый, мм</label><input type="number" id="Dfinal" value="200.5" step="0.05"></div>
@@ -135,62 +135,56 @@
         <div class="fld" id="fldAO" style="display:none"><label id="t_lblAO">AO, мм</label><input type="number" id="AO" value="1" step="0.05"></div>
       </div>
     </div>
-
-    <div class="grp">
-      <div class="cap" id="t_capBevels">Данные фасок</div>
-      <div class="gridN c6" id="bevelGrid">
-        <div class="subcap" id="capA">Верх</div>
-        <div class="fld"><label id="t_lbl1A">1A: угол LM–AD, °</label><input type="number" id="alphaA" value="9" step="0.5"></div>
-        <div class="fld"><label id="t_lbl2A">2A: угол O1L–AD, °</label><input type="number" id="betaA" value="18" step="0.5"></div>
-        <div class="fld" style="border-left:3px solid #2f6fd6;padding-left:6px;"><label id="t_lblLen2A" style="color:#2f6fd6">2A: катет O1L, мм</label><input type="number" id="Len2A" value="0.5" step="0.05"></div>
-
-        <div class="subcap" id="capB" style="display:none">Низ</div>
-        <div class="fld" style="display:none"><label id="t_lbl1B">1B: угол NP–AD, °</label><input type="number" id="gammaB" value="9" step="0.5"></div>
-        <div class="fld" style="display:none"><label id="t_lbl2B">2B: угол O1N–AD, °</label><input type="number" id="psiB" value="18" step="0.5"></div>
-        <div class="fld" style="display:none;border-left:3px solid #8a5a2e;padding-left:6px;"><label id="t_lblLen2B" style="color:#8a5a2e">2B: катет O1N, мм</label><input type="number" id="Len2B" value="0.5" step="0.05"></div>
-      </div>
-    </div>
-
-    <div class="grp">
-      <div class="cap" id="t_capWheel">Объём и масса материала</div>
-      <div class="out-row"><span class="k" id="t_lblVol">Объём снимаемого материала</span><span class="v" id="volOut">—</span></div>
-      <div class="gridN c3">
-        <div class="fld"><label id="t_lblDens">Плотность материала, г/см³</label><input type="number" id="density" value="7.85" step="0.05"></div>
-        <div class="fld"><label id="t_lblHRC">Твёрдость ножа, HRC</label><input type="number" id="knifeHRC" value="58" step="0.5"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="groups" id="halfknifeGroups" style="display:none">
-    <div class="grp">
-      <div class="cap" id="t_capDimsHalf">Диаметр</div>
+    <!-- Полунож -->
+    <div id="dimsHalf" style="display:none;">
       <div class="gridN c3">
         <div class="fld"><label id="t_lblDh">Ø, мм</label><input type="number" id="Dh" value="200" step="0.05"></div>
         <div class="fld"><label id="t_lblTh">Толщина T, мм</label><input type="number" id="Th" value="2" step="0.05"></div>
       </div>
     </div>
+  </div>
 
-    <div class="grp">
-      <div class="cap" id="t_capBevelsHalf">Данные фасок</div>
-      <div class="gridN c6" id="bevelGridHalf">
-        <div class="subcap" id="capHA">Верх</div>
-        <div class="fld"><label id="t_lblAngHA">Угол LM–AD, °</label><input type="number" id="alphaHA" value="9" step="0.5"></div>
-        <div class="fld" style="border-left:3px solid #2e8b47;padding-left:6px;"><label id="t_lblLenHA" style="color:#2e8b47">Катет LM, мм</label><input type="number" id="Len1HA" value="4" step="0.05"></div>
+  <!-- 4. Данные фасок -->
+  <div class="grp" id="blockBevels">
+    <div class="cap" id="t_capBevels">Данные фасок</div>
+    <!-- Нож фаски -->
+    <div class="gridN c6" id="bevelGrid">
+      <div class="subcap" id="capA">Верх</div>
+      <div class="fld"><label id="t_lbl1A">Угол, °</label><input type="number" id="alphaA" value="9" step="0.5"></div>
+      <div class="fld"><label id="t_lbl2A">Угол, °</label><input type="number" id="betaA" value="18" step="0.5"></div>
+      <div class="fld" style="border-left:3px solid #2f6fd6;padding-left:6px;"><label id="t_lblLen2A" style="color:#2f6fd6">Катет, мм</label><input type="number" id="Len2A" value="0.5" step="0.05"></div>
 
-        <div class="subcap" id="capHB" style="display:none">Низ</div>
-        <div class="fld" style="display:none"><label id="t_lblAngHB">Угол NP–AD, °</label><input type="number" id="alphaHB" value="9" step="0.5"></div>
-        <div class="fld" style="display:none;border-left:3px solid #e07b1f;padding-left:6px;"><label id="t_lblLenHB" style="color:#e07b1f">Катет NP, мм</label><input type="number" id="Len1HB" value="4" step="0.05"></div>
-      </div>
+      <div class="subcap" id="capB" style="display:none">Низ</div>
+      <div class="fld" style="display:none"><label id="t_lbl1B">Угол, °</label><input type="number" id="gammaB" value="9" step="0.5"></div>
+      <div class="fld" style="display:none"><label id="t_lbl2B">Угол, °</label><input type="number" id="psiB" value="18" step="0.5"></div>
+      <div class="fld" style="display:none;border-left:3px solid #8a5a2e;padding-left:6px;"><label id="t_lblLen2B" style="color:#8a5a2e">Катет, мм</label><input type="number" id="Len2B" value="0.5" step="0.05"></div>
     </div>
+    <!-- Полунож фаски -->
+    <div class="gridN c6" id="bevelGridHalf" style="display:none;">
+      <div class="subcap" id="capHA">Верх</div>
+      <div class="fld"><label id="t_lblAngHA">Угол, °</label><input type="number" id="alphaHA" value="9" step="0.5"></div>
+      <div class="fld" style="border-left:3px solid #2e8b47;padding-left:6px;"><label id="t_lblLenHA" style="color:#2e8b47">Катет, мм</label><input type="number" id="Len1HA" value="4" step="0.05"></div>
 
-    <div class="grp">
-      <div class="cap" id="t_capWheelHalf">Объём и масса материала</div>
-      <div class="out-row"><span class="k" id="t_lblVolHalf">Объём снимаемого материала</span><span class="v" id="volOutHalf">—</span></div>
-      <div class="gridN c3">
-        <div class="fld"><label id="t_lblDensHalf">Плотность материала, г/см³</label><input type="number" id="densityHalf" value="7.85" step="0.05"></div>
-      </div>
+      <div class="subcap" id="capHB" style="display:none">Низ</div>
+      <div class="fld" style="display:none"><label id="t_lblAngHB">Угол, °</label><input type="number" id="alphaHB" value="9" step="0.5"></div>
+      <div class="fld" style="display:none;border-left:3px solid #e07b1f;padding-left:6px;"><label id="t_lblLenHB" style="color:#e07b1f">Катет, мм</label><input type="number" id="Len1HB" value="4" step="0.05"></div>
     </div>
   </div>
+
+  <!-- 5. Чертеж -->
+  <div class="stage-wrap">
+    <svg id="svg" viewBox="0 0 400 260"></svg>
+  </div>
+
+  <!-- 6. Легенда -->
+  <div class="legend" id="legend"></div>
+
+  <!-- 7. Объем -->
+  <div class="grp" id="blockVolume">
+    <div class="cap" id="t_capWheel">Объём и масса материала</div>
+    <div class="out-row"><span class="k" id="t_lblVol">Объём снимаемого материала</span><span class="v" id="volOut">—</span></div>
+  </div>
+
 </div>
 
 <script>
@@ -202,8 +196,7 @@ const d2r = d => d*Math.PI/180;
 // ---------- i18n ----------
 const DICT = {
   ru:{
-    t_title:'GrindCalc — геометрия фасок',
-    btnSave:'Сохранить расчёт', btnOpen:'Открыть расчёт',
+    t_title:'GrindCalc',
     t_capGroup:'Тип детали', groupKnife:'Нож', groupHalfknife:'Полунож',
     t_capMode:'Выбор фаски', modeSingle:'Односторон.', modeSym:'Симметр.', modeAsym:'Несимметр.',
     t_lblT:'Толщина T, мм', t_lblTh:'Толщина T, мм',
@@ -213,12 +206,12 @@ const DICT = {
     t_lblGauge:'Измеритель со смещением от торца', t_lblBG:'BG, мм',
     warnGauge:'BG должно быть меньше BM (точка G должна лежать между B и M)',
     t_capBevels:'Данные фасок', capTop:'Верх', capBottom:'Низ', capTopSingle:'Фаска',
-    t_lbl1A:'1A: угол LM–AD, °', t_lbl2A:'2A: угол O1L–AD, °', t_lblLen2A:'2A: катет O1L, мм',
-    t_lbl1B:'1B: угол NP–AD, °', t_lbl2B:'2B: угол O1N–AD, °', t_lblLen2B:'2B: катет O1N, мм',
+    t_lbl1A:'Угол, °', t_lbl2A:'Угол, °', t_lblLen2A:'Катет, мм',
+    t_lbl1B:'Угол, °', t_lbl2B:'Угол, °', t_lblLen2B:'Катет, мм',
     t_capDimsHalf:'Диаметр', t_lblDh:'Ø, мм',
-    t_capBevelsHalf:'Данные фасок', t_lblAngHA:'Угол LM–AD, °', t_lblLenHA:'Катет LM, мм',
-    t_lblAngHB:'Угол NP–AD, °', t_lblLenHB:'Катет NP, мм',
-    t_capWheelHalf:'Объём и масса материала', t_lblVolHalf:'Объём снимаемого материала', t_lblDensHalf:'Плотность материала, г/см³',
+    t_capBevelsHalf:'Данные фасок', t_lblAngHA:'Угол, °', t_lblLenHA:'Катет, мм',
+    t_lblAngHB:'Угол, °', t_lblLenHB:'Катет, мм',
+    t_capWheel:'Объём и масса материала', t_lblVol:'Объём снимаемого материала',
     note:'Чертёж выполнен пропорционально (2 мм толщины ≈ 1 см на экране)',
     torec:'Убыль диаметра', diamStart:'Диаметр начала фаски',
     faska:'Фаска',
@@ -229,15 +222,10 @@ const DICT = {
     warnSecA:'Вторая фаска (верх) отсутствует — 1A начинается прямо из O1', warnSecB:'Вторая фаска (низ) отсутствует — 1B начинается прямо из O1',
     warnPrimA:'1A не нужна: 2A сама достигает толщины', warnPrimB:'1B не нужна: 2B сама достигает толщины',
     warnDiam:'Готовый диаметр должен быть меньше диаметра заготовки',
-    warnAO:'AO должно быть больше 0 и меньше толщины T',
-    t_capWheel:'Объём и абразивный круг', t_lblVol:'Объём снимаемого материала',
-    t_lblGratio:'G-ratio (по HRC)', t_lblWear:'Убыль круга / коррекция подачи ΔR',
-    t_lblWD:'Ø круга, мм', t_lblWW:'Ширина круга, мм', t_lblWH:'Твёрдость связки', t_lblHRC:'Твёрдость ножа, HRC',
-    t_wheelNote:'G-ratio берётся по HRC ножа (таблица из основного приложения). Буква твёрдости связки пока информационная — не участвует в расчёте, нужны твои значения G по буквам, если хочешь их учитывать.'
+    warnAO:'AO должно быть больше 0 и меньше толщины T'
   },
   de:{
-    t_title:'GrindCalc — Fasengeometrie',
-    btnSave:'Berechnung speichern', btnOpen:'Berechnung öffnen',
+    t_title:'GrindCalc',
     t_capGroup:'Werkstücktyp', groupKnife:'Messer', groupHalfknife:'Halbmesser',
     t_capMode:'Fasenwahl', modeSingle:'Einseitig', modeSym:'Symmetrisch', modeAsym:'Asymmetrisch',
     t_lblT:'Dicke T, mm', t_lblTh:'Dicke T, mm',
@@ -247,12 +235,12 @@ const DICT = {
     t_lblGauge:'Messfühler mit Versatz vom Rand', t_lblBG:'BG, mm',
     warnGauge:'BG muss kleiner als BM sein (G muss zwischen B und M liegen)',
     t_capBevels:'Fasendaten', capTop:'Oben', capBottom:'Unten', capTopSingle:'Fase',
-    t_lbl1A:'1A: Winkel LM–AD, °', t_lbl2A:'2A: Winkel O1L–AD, °', t_lblLen2A:'2A: Kathete O1L, mm',
-    t_lbl1B:'1B: Winkel NP–AD, °', t_lbl2B:'2B: Winkel O1N–AD, °', t_lblLen2B:'2B: Kathete O1N, mm',
+    t_lbl1A:'Winkel, °', t_lbl2A:'Winkel, °', t_lblLen2A:'Kathete, mm',
+    t_lbl1B:'Winkel, °', t_lbl2B:'Winkel, °', t_lblLen2B:'Kathete, mm',
     t_capDimsHalf:'Durchmesser', t_lblDh:'Ø, mm',
-    t_capBevelsHalf:'Fasendaten', t_lblAngHA:'Winkel LM–AD, °', t_lblLenHA:'Kathete LM, mm',
-    t_lblAngHB:'Winkel NP–AD, °', t_lblLenHB:'Kathete NP, mm',
-    t_capWheelHalf:'Volumen und Masse', t_lblVolHalf:'Abgetragenes Volumen', t_lblDensHalf:'Dichte, g/cm³',
+    t_capBevelsHalf:'Fasendaten', t_lblAngHA:'Winkel, °', t_lblLenHA:'Kathete, mm',
+    t_lblAngHB:'Winkel, °', t_lblLenHB:'Kathete, mm',
+    t_capWheel:'Volumen und Masse', t_lblVol:'Abgetragenes Volumen',
     note:'Zeichnung proportional (2 mm Dicke ≈ 1 cm am Bildschirm)',
     torec:'Durchmesserabnahme', diamStart:'Durchmesser Fasenbeginn',
     faska:'Fase',
@@ -263,15 +251,10 @@ const DICT = {
     warnSecA:'2. Fase (oben) fehlt — 1A beginnt direkt bei O1', warnSecB:'2. Fase (unten) fehlt — 1B beginnt direkt bei O1',
     warnPrimA:'1A nicht nötig: 2A erreicht die Dicke allein', warnPrimB:'1B nicht nötig: 2B erreicht die Dicke allein',
     warnDiam:'Der Fertigdurchmesser muss kleiner als der Rohlingdurchmesser sein',
-    warnAO:'AO muss größer als 0 und kleiner als die Dicke T sein',
-    t_capWheel:'Volumen und Schleifscheibe', t_lblVol:'Abgetragenes Volumen',
-    t_lblGratio:'G-Ratio (nach HRC)', t_lblWear:'Scheibenabtrag / Zustellkorrektur ΔR',
-    t_lblWD:'Ø Scheibe, mm', t_lblWW:'Breite Scheibe, mm', t_lblWH:'Bindungshärte', t_lblHRC:'Härte Messer, HRC',
-    t_wheelNote:'G-Ratio wird über die Messer-HRC ermittelt (Tabelle aus der Hauptanwendung). Der Bindungshärte-Buchstabe ist derzeit nur informativ — fließt nicht in die Berechnung ein.'
+    warnAO:'AO muss größer als 0 und kleiner als die Dicke T sein'
   },
   uk:{
-    t_title:'GrindCalc — геометрія фасок',
-    btnSave:'Зберегти розрахунок', btnOpen:'Відкрити розрахунок',
+    t_title:'GrindCalc',
     t_capGroup:'Тип деталі', groupKnife:'Ніж', groupHalfknife:'Півніж',
     t_capMode:'Вибір фаски', modeSingle:'Одностор.', modeSym:'Симетр.', modeAsym:'Несиметр.',
     t_lblT:'Товщина T, мм', t_lblTh:'Товщина T, мм',
@@ -281,12 +264,12 @@ const DICT = {
     t_lblGauge:'Вимірювач зі зміщенням від торця', t_lblBG:'BG, мм',
     warnGauge:'BG має бути меншим за BM (G має лежати між B і M)',
     t_capBevels:'Дані фасок', capTop:'Верх', capBottom:'Низ', capTopSingle:'Фаска',
-    t_lbl1A:'1A: кут LM–AD, °', t_lbl2A:'2A: кут O1L–AD, °', t_lblLen2A:'2A: катет O1L, мм',
-    t_lbl1B:'1B: кут NP–AD, °', t_lbl2B:'2B: кут O1N–AD, °', t_lblLen2B:'2B: катет O1N, мм',
+    t_lbl1A:'Кут, °', t_lbl2A:'Кут, °', t_lblLen2A:'Катет, мм',
+    t_lbl1B:'Кут, °', t_lbl2B:'Кут, °', t_lblLen2B:'Катет, мм',
     t_capDimsHalf:'Діаметр', t_lblDh:'Ø, мм',
-    t_capBevelsHalf:'Дані фасок', t_lblAngHA:'Кут LM–AD, °', t_lblLenHA:'Катет LM, мм',
-    t_lblAngHB:'Кут NP–AD, °', t_lblLenHB:'Катет NP, мм',
-    t_capWheelHalf:'Об\'єм і маса матеріалу', t_lblVolHalf:'Об\'єм знімання матеріалу', t_lblDensHalf:'Щільність матеріалу, г/см³',
+    t_capBevelsHalf:'Дані фасок', t_lblAngHA:'Кут, °', t_lblLenHA:'Катет, мм',
+    t_lblAngHB:'Кут, °', t_lblLenHB:'Катет, мм',
+    t_capWheel:'Об\'єм і маса матеріалу', t_lblVol:'Об\'єм знімання матеріалу',
     note:'Креслення виконано пропорційно (2 мм товщини ≈ 1 см на екрані)',
     torec:'Убуток діаметра', diamStart:'Діаметр початку фаски',
     faska:'Фаска',
@@ -297,15 +280,10 @@ const DICT = {
     warnSecA:'Другої фаски (верх) немає — 1A починається прямо з O1', warnSecB:'Другої фаски (низ) немає — 1B починається прямо з O1',
     warnPrimA:'1A не потрібна: 2A сама досягає товщини', warnPrimB:'1B не потрібна: 2B сама досягає товщини',
     warnDiam:'Готовий діаметр має бути меншим за діаметр заготовки',
-    warnAO:'AO має бути більшим за 0 і меншим за товщину T',
-    t_capWheel:'Об\'єм і абразивний круг', t_lblVol:'Об\'єм знімання матеріалу',
-    t_lblGratio:'G-ratio (за HRC)', t_lblWear:'Убуток круга / корекція подачі ΔR',
-    t_lblWD:'Ø круга, мм', t_lblWW:'Ширина круга, мм', t_lblWH:'Твердість зв\'язки', t_lblHRC:'Твердість ножа, HRC',
-    t_wheelNote:'G-ratio береться за HRC ножа (таблиця з основного додатку). Літера твердості зв\'язки поки інформаційна — не бере участі в розрахунку, потрібні твої значення G за літерами.'
+    warnAO:'AO має бути більшим за 0 і меншим за товщину T'
   },
   en:{
-    t_title:'GrindCalc — bevel geometry',
-    btnSave:'Save calculation', btnOpen:'Open calculation',
+    t_title:'GrindCalc',
     t_capGroup:'Part type', groupKnife:'Knife', groupHalfknife:'Half-knife',
     t_capMode:'Bevel type', modeSingle:'Single', modeSym:'Symmetric', modeAsym:'Asymmetric',
     t_lblT:'Thickness T, mm', t_lblTh:'Thickness T, mm',
@@ -315,12 +293,12 @@ const DICT = {
     t_lblGauge:'Gauge offset from the edge', t_lblBG:'BG, mm',
     warnGauge:'BG must be smaller than BM (G must lie between B and M)',
     t_capBevels:'Bevel data', capTop:'Top', capBottom:'Bottom', capTopSingle:'Bevel',
-    t_lbl1A:'1A: angle LM–AD, °', t_lbl2A:'2A: angle O1L–AD, °', t_lblLen2A:'2A: leg O1L, mm',
-    t_lbl1B:'1B: angle NP–AD, °', t_lbl2B:'2B: angle O1N–AD, °', t_lblLen2B:'2B: leg O1N, mm',
+    t_lbl1A:'Angle, °', t_lbl2A:'Angle, °', t_lblLen2A:'Leg, mm',
+    t_lbl1B:'Angle, °', t_lbl2B:'Angle, °', t_lblLen2B:'Leg, mm',
     t_capDimsHalf:'Diameter', t_lblDh:'Ø, mm',
-    t_capBevelsHalf:'Bevel data', t_lblAngHA:'Angle LM–AD, °', t_lblLenHA:'Leg LM, mm',
-    t_lblAngHB:'Angle NP–AD, °', t_lblLenHB:'Leg NP, mm',
-    t_capWheelHalf:'Volume & mass', t_lblVolHalf:'Removed material volume', t_lblDensHalf:'Material density, g/cm³',
+    t_capBevelsHalf:'Bevel data', t_lblAngHA:'Angle, °', t_lblLenHA:'Leg, mm',
+    t_lblAngHB:'Angle, °', t_lblLenHB:'Leg, mm',
+    t_capWheel:'Volume & mass', t_lblVol:'Removed material volume',
     note:'Drawing is proportional (2 mm thickness ≈ 1 cm on screen)',
     torec:'Diameter reduction', diamStart:'Bevel start diameter',
     faska:'Bevel',
@@ -331,11 +309,7 @@ const DICT = {
     warnSecA:'No 2nd bevel (top) — 1A starts directly at O1', warnSecB:'No 2nd bevel (bottom) — 1B starts directly at O1',
     warnPrimA:'1A not needed: 2A alone reaches the thickness', warnPrimB:'1B not needed: 2B alone reaches the thickness',
     warnDiam:'Final diameter must be smaller than blank diameter',
-    warnAO:'AO must be greater than 0 and smaller than thickness T',
-    t_capWheel:'Volume & grinding wheel', t_lblVol:'Removed material volume',
-    t_lblGratio:'G-ratio (by HRC)', t_lblWear:'Wheel wear / feed correction ΔR',
-    t_lblWD:'Ø wheel, mm', t_lblWW:'Wheel width, mm', t_lblWH:'Bond hardness', t_lblHRC:'Knife hardness, HRC',
-    t_wheelNote:'G-ratio is taken from knife HRC (table from the main app). The bond-hardness letter is informational only for now — it does not affect the calculation; supply G values per letter to include it.'
+    warnAO:'AO must be greater than 0 and smaller than thickness T'
   }
 };
 let lang = (navigator.language||'ru').toLowerCase();
@@ -344,7 +318,6 @@ lang = lang.startsWith('de') ? 'de' : lang.startsWith('uk') ? 'uk' : lang.starts
 function applyI18n(){
   const d = DICT[lang];
   document.querySelectorAll('[id^="t_"]').forEach(elx=>{ if(d[elx.id]) elx.textContent = d[elx.id]; });
-  $('btnSave').textContent = d.btnSave; $('btnOpen').textContent = d.btnOpen;
   document.querySelector('[data-group="knife"]').textContent = d.groupKnife;
   document.querySelector('[data-group="halfknife"]').textContent = d.groupHalfknife;
   document.querySelector('[data-mode="single"]').textContent = d.modeSingle;
@@ -360,15 +333,18 @@ document.querySelectorAll('.langbtns button').forEach(b=>{
   b.addEventListener('click',()=>{ lang=b.dataset.lang; applyI18n(); render(); });
 });
 
-// ---------- group (Нож / Полунож) ----------
+// ---------- group ----------
 let group='knife';
 document.querySelectorAll('#groupBtns button').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('#groupBtns button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     group=b.dataset.group;
-    $('knifeGroups').style.display = group==='knife' ? 'flex' : 'none';
-    $('halfknifeGroups').style.display = group==='halfknife' ? 'flex' : 'none';
+    $('dimsKnife').style.display = group==='knife' ? 'block' : 'none';
+    $('dimsHalf').style.display = group==='halfknife' ? 'block' : 'none';
+    $('bevelGrid').style.display = group==='knife' ? 'grid' : 'none';
+    $('bevelGridHalf').style.display = group==='halfknife' ? 'grid' : 'none';
+    applyI18n();
     render();
   });
 });
@@ -404,9 +380,9 @@ document.querySelectorAll('input[type=number]').forEach(i=>i.addEventListener('i
 
 // ---------- save / open ----------
 $('btnSave').addEventListener('click',()=>{
-  const fields=['T','Dblank','Dfinal','alphaA','betaA','Len2A','gammaB','psiB','Len2B','AO','density','knifeHRC',
-                'Dh','Th','alphaHA','Len1HA','alphaHB','Len1HB','densityHalf','BG'];
-  let out = 'GrindCalc save\ngroup='+group+'\nmode='+mode+'\ncentered='+($('chkCentered').checked?'1':'0')
+  const fields=['T','Dblank','Dfinal','alphaA','betaA','Len2A','gammaB','psiB','Len2B','AO',
+                'Dh','Th','alphaHA','Len1HA','alphaHB','Len1HB','BG'];
+  let out = 'GrindCalc save v1.01\ngroup='+group+'\nmode='+mode+'\ncentered='+($('chkCentered').checked?'1':'0')
     +'\ngauge='+($('chkGauge').checked?'1':'0')+'\n';
   fields.forEach(f=>out+=f+'='+$(f).value+'\n');
   const blob = new Blob([out], {type:'text/plain'});
@@ -429,8 +405,10 @@ function applySaveText(text){
     if(k==='group'){
       group=v.trim();
       document.querySelectorAll('#groupBtns button').forEach(x=>x.classList.toggle('active', x.dataset.group===group));
-      $('knifeGroups').style.display = group==='knife' ? 'flex' : 'none';
-      $('halfknifeGroups').style.display = group==='halfknife' ? 'flex' : 'none';
+      $('dimsKnife').style.display = group==='knife' ? 'block' : 'none';
+      $('dimsHalf').style.display = group==='halfknife' ? 'block' : 'none';
+      $('bevelGrid').style.display = group==='knife' ? 'grid' : 'none';
+      $('bevelGridHalf').style.display = group==='halfknife' ? 'grid' : 'none';
     } else if(k==='mode'){
       mode=v.trim();
       document.querySelectorAll('#modeBtns button').forEach(x=>x.classList.toggle('active', x.dataset.mode===mode));
@@ -453,7 +431,7 @@ $('fileInput').addEventListener('change', e=>{
   e.target.value='';
 });
 
-// ---------- shared geometry helpers ----------
+// ---------- geometry helpers ----------
 function perpDist(P0, P1, P2){
   const dx=P2.x-P1.x, dy=P2.y-P1.y;
   const len=Math.hypot(dx,dy);
@@ -474,11 +452,10 @@ function polygonProps(pts){
   Cx /= (6*A);
   return {area:Math.abs(A), cx:Cx};
 }
-// Pappus's theorem: volume swept by a plane cross-section revolved around the disc axis.
 function revolveVolume(pts, D){
   const {area, cx} = polygonProps(pts);
-  const R = D/2 - cx; // mm
-  return 2*Math.PI*R*area; // mm^3
+  const R = D/2 - cx;
+  return 2*Math.PI*R*area;
 }
 function svgReset(t, yMaxMm, xMaxMm){
   const svg = $('svg'); svg.innerHTML='';
@@ -513,10 +490,7 @@ function svgReset(t, yMaxMm, xMaxMm){
 }
 function render(){ if(group==='knife') renderKnife(); else renderHalf(); }
 
-// ============================================================
-// ---------- НОЖ geometry ----------
-// O1 -> (secondary, Len2 known, angle beta) -> L -> (primary, angle alpha, length solved) -> M
-// M must land exactly on the target plane (BC for top, AD for bottom).
+// ---------- НОЖ ----------
 function computeSide(O1, alphaDeg, betaDeg, Len2, target_y, dir){
   const alpha = d2r(alphaDeg);
   let warnSec = false, L;
@@ -536,21 +510,11 @@ function computeSide(O1, alphaDeg, betaDeg, Len2, target_y, dir){
     if(Len1 < 0){ warnPrim = true; Len1 = 0; }
   }
   const M = {x:L.x + Len1*Math.cos(alpha), y:L.y + dir*Len1*Math.sin(alpha)};
-  // slope of the primary-bevel line, taken from its own angle rather than (M-L),
-  // so it stays defined even when Len1 collapses to 0 (M coincides with L)
   const slope = dir*Math.tan(alpha);
-  const L1y = L.y - slope*L.x;
-  return {L, M, L1y, Len1, Len2: warnSec?0:Len2, warnSec, warnPrim, lenLM: Math.hypot(M.x-L.x, M.y-L.y)};
+  return {L, M, L1y: L.y - slope*L.x, Len1, Len2: warnSec?0:Len2, warnSec, warnPrim, lenLM: Math.hypot(M.x-L.x, M.y-L.y)};
 }
 function removedVolumeKnife(cornerPt, side, O1pt, Dblank){
-  const pts = [
-    [cornerPt.x, cornerPt.y],
-    [side.M.x, side.M.y],
-    [side.L.x, side.L.y],
-    [O1pt.x, O1pt.y],
-    [0, O1pt.y]
-  ];
-  return revolveVolume(pts, Dblank);
+  return revolveVolume([[cornerPt.x, cornerPt.y],[side.M.x, side.M.y],[side.L.x, side.L.y],[O1pt.x, O1pt.y],[0, O1pt.y]], Dblank);
 }
 function getO1(mode, xA, T, centered, AOval){
   const t = T/2;
@@ -569,31 +533,23 @@ function renderKnife(){
   const xA = (Dblank - Dfinal)/2;
 
   let diamWarn = !(Dfinal < Dblank);
-
   const centered = $('chkCentered').checked;
   const AOval = parseFloat($('AO').value);
-  let aoWarn = false;
-  if(mode==='asym' && !centered){
-    if(!(AOval > 0 && AOval < T)) aoWarn = true;
-  }
+  let aoWarn = (mode==='asym' && !centered && !(AOval > 0 && AOval < T));
 
   const O1 = getO1(mode, Math.max(xA,0), T, mode==='asym'?centered:true, isNaN(AOval)?0:AOval);
 
   const alphaA = parseFloat($('alphaA').value), betaA = parseFloat($('betaA').value), Len2Acath = parseFloat($('Len2A').value);
-  // field holds the cathetus (drawing dimension); convert to hypotenuse (ruler-measurable) = cathetus / cos(angle)
   const Len2A = Len2Acath / Math.cos(d2r(betaA));
 
-  let top, bottom=null, Dm;
-  top = computeSide(O1, alphaA, betaA, Len2A, t, +1);
+  let top = computeSide(O1, alphaA, betaA, Len2A, t, +1);
+  let bottom = null;
   if(mode!=='single'){
     const gammaB = parseFloat($('gammaB').value), psiB = parseFloat($('psiB').value), Len2Bcath = parseFloat($('Len2B').value);
     const Len2Bv = Len2Bcath / Math.cos(d2r(psiB));
-    const ga = mode==='sym' ? alphaA : gammaB;
-    const gb = mode==='sym' ? betaA : psiB;
-    const gl = mode==='sym' ? Len2A : Len2Bv;
-    bottom = computeSide(O1, ga, gb, gl, -t, -1);
+    bottom = computeSide(O1, mode==='sym'?alphaA:gammaB, mode==='sym'?betaA:psiB, mode==='sym'?Len2A:Len2Bv, -t, -1);
   }
-  Dm = Dblank - 2*top.M.x;
+  let Dm = Dblank - 2*top.M.x;
 
   const Bpt = {x:0, y:t}, Apt = {x:0, y:-t};
   const L1pt = {x:0, y:top.L1y};
@@ -609,36 +565,28 @@ function renderKnife(){
   let volume = removedVolumeKnife(Bpt, top, O1, Dblank);
   if(bottom) volume += removedVolumeKnife(Apt, bottom, O1, Dblank);
   const volCm3 = Math.abs(volume)/1000;
-  const density = parseFloat($('density').value);
-  const massG = volCm3 * (isNaN(density)? 0 : density);
-  $('volOut').textContent = volCm3.toFixed(3)+' см³' + (density>0? ' ('+massG.toFixed(1)+' г)' : '');
+  const massG = volCm3 * 7.85; // Сталь по умолчанию
+  $('volOut').textContent = volCm3.toFixed(3)+' см³ ('+massG.toFixed(1)+' г)';
 
-  // ---- gauge offset (G on BC/AD, distance BG from the corner): scales only the
-  // primary (1st) bevel depth by the ratio GM/BM ----
   const gaugeOn = $('chkGauge').checked;
   const BGval = parseFloat($('BG').value);
   let ratioTop = 1, ratioBottom = 1, gaugeWarnTop = false, gaugeWarnBottom = false, Gtop=null, Gbottom=null;
   if(gaugeOn){
-    if(!(BGval >= 0 && BGval < top.M.x)){ gaugeWarnTop = true; }
+    if(!(BGval >= 0 && BGval < top.M.x)) gaugeWarnTop = true;
     else { ratioTop = (top.M.x - BGval)/top.M.x; Gtop = {x:BGval, y:t}; }
     if(bottom){
-      if(!(BGval >= 0 && BGval < bottom.M.x)){ gaugeWarnBottom = true; }
+      if(!(BGval >= 0 && BGval < bottom.M.x)) gaugeWarnBottom = true;
       else { ratioBottom = (bottom.M.x - BGval)/bottom.M.x; Gbottom = {x:BGval, y:-t}; }
     }
   }
 
-  const COL = {
-    green:{bg:'#2e8b47', fg:'#f2f6ff'}, blue:{bg:'#2f6fd6', fg:'#f2f6ff'},
-    orange:{bg:'#e07b1f', fg:'#f2f6ff'}, brown:{bg:'#8a5a2e', fg:'#f2f6ff'}, red:{bg:'#d63b2f', fg:'#f2f6ff'}
-  };
+  const COL = { green:{bg:'#2e8b47', fg:'#f2f6ff'}, blue:{bg:'#2f6fd6', fg:'#f2f6ff'}, orange:{bg:'#e07b1f', fg:'#f2f6ff'}, brown:{bg:'#8a5a2e', fg:'#f2f6ff'}, red:{bg:'#d63b2f', fg:'#f2f6ff'} };
   function chip(label, value, col){
     return `<div class="row" style="background:${col.bg};color:${col.fg};border-radius:4px;padding:4px 8px;margin:3px 0;border:none;">`
       + `<span style="color:${col.fg}">${label}</span><span style="color:${col.fg};font-weight:700">${value}</span></div>`;
   }
 
-  const rows = [[d.torec, xA.toFixed(3)+' мм'],[d.diamStart, Dm.toFixed(3)+' мм']];
-  let rowsHtml = rows.map(r=>`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
-
+  let rowsHtml = [[d.torec, xA.toFixed(3)+' мм'],[d.diamStart, Dm.toFixed(3)+' мм']].map(r=>`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
   let warnHtml = '';
   if(diamWarn) warnHtml += `<div class="warn">${d.warnDiam}</div>`;
   if(aoWarn) warnHtml += `<div class="warn">${d.warnAO}</div>`;
@@ -648,78 +596,56 @@ function renderKnife(){
   if(bottom && bottom.warnPrim) warnHtml += `<div class="warn">${d.warnPrimB}</div>`;
   if(gaugeWarnTop || gaugeWarnBottom) warnHtml += `<div class="warn">${d.warnGauge}</div>`;
 
-  let chipsHtml = '';
-  chipsHtml += chip(d.faska, top.lenLM.toFixed(3)+' мм', COL.green);
+  let chipsHtml = chip(d.faska, top.lenLM.toFixed(3)+' мм', COL.green);
   if(!top.warnSec) chipsHtml += chip(d.faska, top.Len2.toFixed(3)+' мм', COL.blue);
   if(bottom && mode==='asym'){
     chipsHtml += chip(d.faska, bottom.lenLM.toFixed(3)+' мм', COL.orange);
     if(!bottom.warnSec) chipsHtml += chip(d.faska, bottom.Len2.toFixed(3)+' мм', COL.brown);
   }
-  {
-    const otherY = bottom ? bottom.L1y : -t;
-    const diff = top.L1y - otherY;
-    const neg = diff < 0;
-    const valStr = (neg? '−' : '') + Math.abs(diff).toFixed(3) + ' мм' + (neg? ' ('+d.overgrind+')' : '');
-    chipsHtml += chip(d.nedoshlif, valStr, COL.red);
-  }
+  const diff = top.L1y - (bottom ? bottom.L1y : -t);
+  chipsHtml += chip(d.nedoshlif, (diff<0?'−':'')+Math.abs(diff).toFixed(3)+' мм'+(diff<0?' ('+d.overgrind+')':''), COL.red);
 
-  const depth1Adisp = depth1A*ratioTop;
-  const depth2Adisp = depth2A==null ? null : depth2A*ratioBottom;
-  let depthHtml;
-  if(!bottom || mode==='sym'){
-    depthHtml = `<div class="row"><span class="k">${d.depthA}</span><span class="v">${depth1Adisp.toFixed(3)} мм</span></div>`
-      + `<div class="row"><span class="k">${d.depthB}</span><span class="v">${depth1B==null? '—' : depth1B.toFixed(3)+' мм'}</span></div>`;
-  } else {
-    depthHtml = `<div class="row"><span class="k">${d.depth1A}</span><span class="v">${depth1Adisp.toFixed(3)} мм</span></div>`
-      + `<div class="row"><span class="k">${d.depth2A}</span><span class="v">${depth2Adisp.toFixed(3)} мм</span></div>`
-      + `<div class="row"><span class="k">${d.depth1B}</span><span class="v">${depth1B==null? '—' : depth1B.toFixed(3)+' мм'}</span></div>`
-      + `<div class="row"><span class="k">${d.depth2B}</span><span class="v">${depth2B==null? '—' : depth2B.toFixed(3)+' мм'}</span></div>`;
-  }
+  let depthHtml = (!bottom || mode==='sym')
+    ? `<div class="row"><span class="k">${d.depthA}</span><span class="v">${(depth1A*ratioTop).toFixed(3)} мм</span></div>`
+      + `<div class="row"><span class="k">${d.depthB}</span><span class="v">${depth1B==null?'—':depth1B.toFixed(3)+' мм'}</span></div>`
+    : `<div class="row"><span class="k">${d.depth1A}</span><span class="v">${(depth1A*ratioTop).toFixed(3)} мм</span></div>`
+      + `<div class="row"><span class="k">${d.depth2A}</span><span class="v">${(depth2A*ratioBottom).toFixed(3)} мм</span></div>`
+      + `<div class="row"><span class="k">${d.depth1B}</span><span class="v">${depth1B==null?'—':depth1B.toFixed(3)+' мм'}</span></div>`
+      + `<div class="row"><span class="k">${d.depth2B}</span><span class="v">${depth2B==null?'—':depth2B.toFixed(3)+' мм'}</span></div>`;
 
   $('legend').innerHTML = rowsHtml + chipsHtml + depthHtml + warnHtml + `<div class="note">${d.note}</div>`;
 
   const xMaxMm = Math.max(top.M.x, bottom? bottom.M.x : 0, 0.001);
   const {sx, sy, dot, line, marginMm} = svgReset(t, t, xMaxMm);
-  const GREEN='#2e8b47', BLUE='#2f6fd6', ORANGE='#e07b1f', BROWN='#8a5a2e', RED='#d63b2f', PURPLE='#a34fd6';
+  dot(sx(O1.x), sy(O1.y), '#2f6fd6');
+  if(mode!=='single') dot(sx(0), sy(O1.y), '#8fa3b0');
+  if(Gtop) dot(sx(Gtop.x), sy(Gtop.y), '#a34fd6');
+  if(Gbottom) dot(sx(Gbottom.x), sy(Gbottom.y), '#a34fd6');
 
-  dot(sx(O1.x), sy(O1.y), BLUE);
-  if(mode!=='single'){
-    dot(sx(0), sy(O1.y), '#8fa3b0');
-  }
-  if(Gtop) dot(sx(Gtop.x), sy(Gtop.y), PURPLE);
-  if(Gbottom) dot(sx(Gbottom.x), sy(Gbottom.y), PURPLE);
-  function drawSide(side, primaryColor, secondaryColor, target_y){
-    line(sx(O1.x),sy(O1.y), sx(side.L.x),sy(side.L.y), secondaryColor);
-    line(sx(side.L.x),sy(side.L.y), sx(side.M.x),sy(side.M.y), primaryColor);
+  function drawSide(side, pCol, sCol, target_y){
+    line(sx(O1.x),sy(O1.y), sx(side.L.x),sy(side.L.y), sCol);
+    line(sx(side.L.x),sy(side.L.y), sx(side.M.x),sy(side.M.y), pCol);
     line(sx(side.L.x),sy(side.L.y), sx(0),sy(side.L1y), '#8fa3b0', true);
     line(sx(side.M.x),sy(side.M.y), sx(xMaxMm+marginMm),sy(target_y), '#5f6c78');
-    dot(sx(side.L.x), sy(side.L.y), secondaryColor);
-    dot(sx(side.M.x), sy(side.M.y), primaryColor);
+    dot(sx(side.L.x), sy(side.L.y), sCol);
+    dot(sx(side.M.x), sy(side.M.y), pCol);
     dot(sx(0), sy(side.L1y), '#8fa3b0');
   }
-  drawSide(top, GREEN, BLUE, t);
+  drawSide(top, '#2e8b47', '#2f6fd6', t);
   if(bottom){
-    const bottomPrimary = mode==='asym' ? ORANGE : GREEN;
-    const bottomSecondary = mode==='asym' ? BROWN : BLUE;
-    drawSide(bottom, bottomPrimary, bottomSecondary, -t);
-    line(sx(0),sy(top.L1y), sx(0),sy(bottom.L1y), RED);
+    drawSide(bottom, mode==='asym'?'#e07b1f':'#2e8b47', mode==='asym'?'#8a5a2e':'#2f6fd6', -t);
+    line(sx(0),sy(top.L1y), sx(0),sy(bottom.L1y), '#d63b2f');
   } else {
-    line(sx(0),sy(top.L1y), sx(0),sy(-t), RED);
+    line(sx(0),sy(top.L1y), sx(0),sy(-t), '#d63b2f');
   }
 }
 
-// ============================================================
-// ---------- ПОЛУНОЖ geometry ----------
-// Simple right triangle per side: corner (B or A) -> M (on BC/AD, given by angle+hypotenuse)
-// -> L/N (on the AB/AD axis itself, no offset — blank diameter never changes).
+// ---------- ПОЛУНОЖ ----------
 function computeHalfSide(cornerY, alphaDeg, Len1, dir){
   const alpha = d2r(alphaDeg);
-  const legH = Len1 * Math.cos(alpha);   // horizontal leg (= BM or AP)
-  const legV = Len1 * Math.sin(alpha);   // vertical leg (= BL or AN)
-  const M = {x: legH, y: cornerY};
-  const L = {x: 0, y: cornerY - dir*legV};
-  const height = Len1 > 0 ? Math.abs(legH*legV)/Len1 : 0; // altitude from the corner to the hypotenuse
-  return {L, M, height};
+  const legH = Len1 * Math.cos(alpha);
+  const legV = Len1 * Math.sin(alpha);
+  return {L:{x:0, y:cornerY - dir*legV}, M:{x:legH, y:cornerY}, height: Len1 > 0 ? Math.abs(legH*legV)/Len1 : 0};
 }
 
 function renderHalf(){
@@ -728,90 +654,61 @@ function renderHalf(){
   const T = parseFloat($('Th').value);
   const t = T/2;
 
-  const alphaHA = parseFloat($('alphaHA').value), Len1HAcath = parseFloat($('Len1HA').value);
-  // field holds the cathetus (drawing dimension); convert to hypotenuse (ruler-measurable) = cathetus / cos(angle)
-  const Len1HA = Len1HAcath / Math.cos(d2r(alphaHA));
+  const alphaHA = parseFloat($('alphaHA').value);
+  const Len1HA = parseFloat($('Len1HA').value) / Math.cos(d2r(alphaHA));
   const top = computeHalfSide(t, alphaHA, Len1HA, +1);
 
   let bottom = null, Len1HB = null;
   if(mode!=='single'){
-    let alphaHB;
-    if(mode==='sym'){ alphaHB=alphaHA; Len1HB=Len1HA; }
-    else {
-      alphaHB=parseFloat($('alphaHB').value);
-      const Len1HBcath = parseFloat($('Len1HB').value);
-      Len1HB = Len1HBcath / Math.cos(d2r(alphaHB));
-    }
+    const alphaHB = mode==='sym' ? alphaHA : parseFloat($('alphaHB').value);
+    Len1HB = mode==='sym' ? Len1HA : parseFloat($('Len1HB').value) / Math.cos(d2r(alphaHB));
     bottom = computeHalfSide(-t, alphaHB, Len1HB, -1);
   }
 
-  const otherY = bottom ? bottom.L.y : -t;
-  const diff = top.L.y - otherY;
-  const neg = diff < 0;
-
-  function removedVolumeHalf(cornerPt, side, D){
-    const pts = [[cornerPt.x,cornerPt.y],[side.M.x,side.M.y],[side.L.x,side.L.y]];
-    return revolveVolume(pts, D);
-  }
-  let volume = removedVolumeHalf({x:0,y:t}, top, D);
-  if(bottom) volume += removedVolumeHalf({x:0,y:-t}, bottom, D);
+  const diff = top.L.y - (bottom ? bottom.L.y : -t);
+  let volume = revolveVolume([[0,t],[top.M.x,top.M.y],[top.L.x,top.L.y]], D);
+  if(bottom) volume += revolveVolume([[0,-t],[bottom.M.x,bottom.M.y],[bottom.L.x,bottom.L.y]], D);
   const volCm3 = Math.abs(volume)/1000;
-  const density = parseFloat($('densityHalf').value);
-  const massG = volCm3 * (isNaN(density)? 0 : density);
-  $('volOutHalf').textContent = volCm3.toFixed(3)+' см³' + (density>0? ' ('+massG.toFixed(1)+' г)' : '');
+  $('volOut').textContent = volCm3.toFixed(3)+' см³ ('+(volCm3*7.85).toFixed(1)+' г)';
 
-  const COL = { green:{bg:'#2e8b47', fg:'#f2f6ff'}, orange:{bg:'#e07b1f', fg:'#f2f6ff'}, red:{bg:'#d63b2f', fg:'#f2f6ff'} };
-  function chip(label, value, col){
-    return `<div class="row" style="background:${col.bg};color:${col.fg};border-radius:4px;padding:4px 8px;margin:3px 0;border:none;">`
-      + `<span style="color:${col.fg}">${label}</span><span style="color:${col.fg};font-weight:700">${value}</span></div>`;
-  }
-  let chipsHtml = '';
-  chipsHtml += chip(d.faska, Len1HA.toFixed(3)+' мм', COL.green);
-  if(bottom) chipsHtml += chip(d.faska, Len1HB.toFixed(3)+' мм', COL.orange);
-  const valStr = (neg? '−' : '') + Math.abs(diff).toFixed(3) + ' мм' + (neg? ' ('+d.overgrind+')' : '');
-  chipsHtml += chip(d.nedoshlif, valStr, COL.red);
-
-  // ---- gauge offset (G on BC/AD, distance BG from the corner): scales the bevel depth by GM/BM ----
   const gaugeOn = $('chkGauge').checked;
   const BGval = parseFloat($('BG').value);
   let ratioTop = 1, ratioBottom = 1, gaugeWarnTop = false, gaugeWarnBottom = false, Gtop=null, Gbottom=null;
   if(gaugeOn){
-    if(!(BGval >= 0 && BGval < top.M.x)){ gaugeWarnTop = true; }
+    if(!(BGval >= 0 && BGval < top.M.x)) gaugeWarnTop = true;
     else { ratioTop = (top.M.x - BGval)/top.M.x; Gtop = {x:BGval, y:t}; }
     if(bottom){
-      if(!(BGval >= 0 && BGval < bottom.M.x)){ gaugeWarnBottom = true; }
+      if(!(BGval >= 0 && BGval < bottom.M.x)) gaugeWarnBottom = true;
       else { ratioBottom = (bottom.M.x - BGval)/bottom.M.x; Gbottom = {x:BGval, y:-t}; }
     }
   }
-  let warnHtml = '';
-  if(gaugeWarnTop || gaugeWarnBottom) warnHtml += `<div class="warn">${d.warnGauge}</div>`;
 
-  const topHeightDisp = top.height*ratioTop;
-  const bottomHeightDisp = bottom==null ? null : bottom.height*ratioBottom;
-  let depthHtml = `<div class="row"><span class="k">${d.depthTop}</span><span class="v">${topHeightDisp.toFixed(3)} мм</span></div>`;
-  if(bottom) depthHtml += `<div class="row"><span class="k">${d.depthBottom}</span><span class="v">${bottomHeightDisp.toFixed(3)} мм</span></div>`;
+  let chipsHtml = `<div class="row" style="background:#2e8b47;color:#f2f6ff;border-radius:4px;padding:4px 8px;margin:3px 0;border:none;"><span>${d.faska}</span><span style="font-weight:700">${Len1HA.toFixed(3)} мм</span></div>`;
+  if(bottom) chipsHtml += `<div class="row" style="background:#e07b1f;color:#f2f6ff;border-radius:4px;padding:4px 8px;margin:3px 0;border:none;"><span>${d.faska}</span><span style="font-weight:700">${Len1HB.toFixed(3)} мм</span></div>`;
+  chipsHtml += `<div class="row" style="background:#d63b2f;color:#f2f6ff;border-radius:4px;padding:4px 8px;margin:3px 0;border:none;"><span>${d.nedoshlif}</span><span style="font-weight:700">${(diff<0?'−':'')+Math.abs(diff).toFixed(3)} мм</span></div>`;
 
-  $('legend').innerHTML = chipsHtml + depthHtml + warnHtml + `<div class="note">${d.note}</div>`;
+  let depthHtml = `<div class="row"><span class="k">${d.depthTop}</span><span class="v">${(top.height*ratioTop).toFixed(3)} мм</span></div>`;
+  if(bottom) depthHtml += `<div class="row"><span class="k">${d.depthBottom}</span><span class="v">${(bottom.height*ratioBottom).toFixed(3)} мм</span></div>`;
+
+  $('legend').innerHTML = chipsHtml + depthHtml + ((gaugeWarnTop||gaugeWarnBottom)?`<div class="warn">${d.warnGauge}</div>`:'') + `<div class="note">${d.note}</div>`;
 
   const xMaxMm = Math.max(top.M.x, bottom? bottom.M.x : 0, 0.001);
   const {sx, sy, dot, line, marginMm} = svgReset(t, t, xMaxMm);
-  const GREEN='#2e8b47', ORANGE='#e07b1f', RED='#d63b2f', PURPLE='#a34fd6';
+  if(Gtop) dot(sx(Gtop.x), sy(Gtop.y), '#a34fd6');
+  if(Gbottom) dot(sx(Gbottom.x), sy(Gbottom.y), '#a34fd6');
 
-  if(Gtop) dot(sx(Gtop.x), sy(Gtop.y), PURPLE);
-  if(Gbottom) dot(sx(Gbottom.x), sy(Gbottom.y), PURPLE);
-
-  function drawHalfSide(cornerPt, side, color, target_y){
+  function drawHalfSide(side, color, target_y){
     line(sx(side.L.x),sy(side.L.y), sx(side.M.x),sy(side.M.y), color);
     line(sx(side.M.x),sy(side.M.y), sx(xMaxMm+marginMm),sy(target_y), '#5f6c78');
     dot(sx(side.L.x), sy(side.L.y), color);
     dot(sx(side.M.x), sy(side.M.y), color);
   }
-  drawHalfSide({x:0,y:t}, top, GREEN, t);
+  drawHalfSide(top, '#2e8b47', t);
   if(bottom){
-    drawHalfSide({x:0,y:-t}, bottom, ORANGE, -t);
-    line(sx(0),sy(top.L.y), sx(0),sy(bottom.L.y), RED);
+    drawHalfSide(bottom, '#e07b1f', -t);
+    line(sx(0),sy(top.L.y), sx(0),sy(bottom.L.y), '#d63b2f');
   } else {
-    line(sx(0),sy(top.L.y), sx(0),sy(-t), RED);
+    line(sx(0),sy(top.L.y), sx(0),sy(-t), '#d63b2f');
   }
 }
 
